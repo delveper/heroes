@@ -1,5 +1,2 @@
-# PDY 
-Professional Development for You/th
-
-
-
+# Heroes
+from Super Puper Intellias Heroes
