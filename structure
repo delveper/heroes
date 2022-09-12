@@ -1,0 +1,24 @@
+heroes/
+├── api/
+│   └── openapi.yml
+├── cfg/
+│   ├── config.go
+│   └── config.yml
+├── cmd/
+│   └──server/
+│       └── main.go
+├── core/
+│   ├─── repo
+│   │    └── repo.go
+│   ├─── trans/
+│   │    ├── handlers.go
+│   │    └── middleware.go
+│   └─── ent/
+│        ├── user.go
+│        └── admin.go
+├── tests/
+│   └── tests.go
+│
+├── README.md
+├── Dockerfile
+├── docker-compose.yml
