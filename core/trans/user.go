@@ -12,7 +12,7 @@ type UserService interface { // we can use here repo.UserKeeper instead
 
 // TODO: handle errors gracefully
 
-func UserHandler(hdl *Handler) http.Handler {
+func (hdl *Handler) UserHandler() http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		switch req.Method {
 		case http.MethodPost:
