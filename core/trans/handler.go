@@ -42,7 +42,7 @@ func NewHandler(srv UserService, opt *cfg.Options) (hdl *Handler, err error) {
 
 func (hdl *Handler) RegisterRoutes() {
 	hdl.Router.Handle(hdl.Options.API.User.Endpoint, // pattern
-		Wrap(UserHandler(hdl), // main handler for the endpoint that will be http method aware
+		Wrap(hdl.UserHandler(), // main handler for the endpoint that will be http method aware
 			WithJSON, // here we can insert e all king of middleware
 		))
 }
