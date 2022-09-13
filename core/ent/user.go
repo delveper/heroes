@@ -4,17 +4,23 @@ import (
 	_ "embed"
 	"errors"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 var (
-	ErrCreatingUser = errors.New("could not create user")
-	ErrInvalidUser  = errors.New("user has to be valid")
+	ErrCreatingUser        = errors.New("could not create user")
+	ErrInvalidEmail        = errors.New("user has to have valid email address")
+	ErrEmailExists         = errors.New("user has to have unique email")
+	ErrInvalidPassword     = errors.New("user has to have valid password")
+	ErrInvalidName         = errors.New("user has to have valid name")
+	ErrDuplicateConstraint = errors.New("duplicate key value violates unique constraint") // feels not OK
 )
 
-// DDL for user table
+// not sure about that
+// hard coding feels less appropriate
 //
 //go:embed user.sql
 var createTableSQL string
@@ -40,46 +46,66 @@ type Service struct {
 }
 
 // NewService is proverbial case
-// about interfaces and structs
+// about passing interfaces and returning structs
 func NewService(uk UserKeeper) *Service {
 	return &Service{Keeper: uk}
 }
 
 // SetID will set new UUID
 // in case we would not provide one
-// database will gen it automatically
+// database will gen it
 func (usr *User) SetID() {
 	usr.ID = uuid.New().String()
 }
 
-// Validate ensures us that User is OK
-// otherwise returns error
+// Validate ensures us that User is OK otherwise returns error
 // TODO: feels like something is missing
-func (usr *User) Validate() error {
-	if IsValidPassword(usr.Password) && IsValidEmail(usr.Email) && IsValidName(usr.FullName) {
-		return nil // user is ok
+//
+//	and I do not get how to deal with cascade of errors
+func (usr *User) Validate() (err error) {
+	// we want our awesome users name and email be clean
+	// is it a right place to do that?
+	usr.FullName = strings.TrimSpace(usr.FullName)
+	usr.Email = strings.TrimSpace(usr.Email)
+
+	switch {
+	case !IsValidName(usr.FullName):
+		return ErrInvalidName
+
+	case !IsValidEmail(usr.Email):
+		return ErrInvalidEmail
+
+	case !IsValidPassword(usr.Password):
+		return ErrInvalidPassword
+
+	default:
+		return nil
 	}
-	return ErrInvalidUser
 }
 
 // CreateTable will create table using
 // embedded SQL that stored in createTableSQL variable
-// is a better choice to hardcode DDL?
 func (srv *Service) CreateTable() error {
 	return srv.Keeper.CreateTable(createTableSQL)
 }
 
-// Add will add new user to repo
+// Add will add new user to database
 // name of method might be changed
 func (srv *Service) Add(usr User) (User, error) {
 	if err := usr.Validate(); err != nil {
-		log.Printf("error occured creating validating %+v: %v", usr, err)
-		return User{}, ErrInvalidUser
+		log.Printf("error occured validating %+v: %v", usr, err)
+		return User{}, err
 	}
 
 	usr, err := srv.Keeper.Add(usr)
 	if err != nil {
 		log.Printf("error occured creating user: %v", err)
+
+		// feels stupid
+		if strings.Contains(err.Error(), ErrDuplicateConstraint.Error()) {
+			return User{}, ErrEmailExists
+		}
+
 		return User{}, ErrCreatingUser
 	}
 

@@ -4,7 +4,7 @@ info:
   description: Made by Super Puper Heroes
   version: 0.0.0
 servers:
-  - url: 'http://localhost:9999'
+  - url: 'http://localhost:8080'
     description: Local development
 
 #https://swagger.io/docs/specification/basic-structure/

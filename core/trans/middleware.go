@@ -1,7 +1,12 @@
 package trans
 
 import (
+	"errors"
 	"net/http"
+)
+
+var (
+	ErrMissingParameter = errors.New("parameter is missing: ")
 )
 
 // Middleware is simple white magic
@@ -31,8 +36,8 @@ func ValidateQueryParams(params ...string) Middleware {
 			for _, param := range params {
 				val := q.Get(param)
 				if val == "" {
-					http.Error(rw, "missing parameter: "+param, http.StatusBadRequest)
-					return // return error is at least one param is missing
+					respondErr(rw, req, http.StatusBadRequest, ErrMissingParameter, param)
+					return
 				}
 			}
 			hdl.ServeHTTP(rw, req) // all params are OK

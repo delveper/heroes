@@ -9,7 +9,7 @@ import (
 // DISCLAIMER
 // experimental
 // huge overkill
-// haven't used in project yet
+// haven't used in project and probably never will
 
 const tagSQL = "sql" // custom tag, that we define in ent.User fields
 

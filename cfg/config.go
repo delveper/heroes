@@ -12,12 +12,12 @@ import (
 // https://zhwt.github.io/yaml-to-go/
 
 type Options struct {
-	Repo Postgres `yaml:"postgres"`
-	HTTP HTTP     `yaml:"http"`
-	API  API      `yaml:"api"`
+	Repo Repo `yaml:"postgres"`
+	HTTP HTTP `yaml:"http"`
+	API  API  `yaml:"api"`
 }
 
-type Postgres struct {
+type Repo struct {
 	Host       string `yaml:"host"`
 	Port       string `yaml:"port"`
 	UserName   string `yaml:"user_name"`
@@ -47,8 +47,8 @@ const defaultPath = "./cfg/config.yml"
 
 func NewOptions() (*Options, error) { return load(&Options{}) }
 
-// Load gives a config from file
-// we can pass here any struct if we wish retrieve partial config
+// Load retrieve a config data from file
+// we can pass here any struct type if we wish retrieve partial config
 func load[C *Options](dst C) (C, error) {
 	file, err := os.Open(defaultPath)
 	if err != nil {

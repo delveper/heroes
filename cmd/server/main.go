@@ -31,7 +31,7 @@ func Run() error {
 
 	// it feels like something is missing here, and we need to redesign all
 	if err := srv.CreateTable(); err != nil {
-		return fmt.Errorf("failed to set up handler: %w", err)
+		return fmt.Errorf("failed make changes to database: %w", err)
 	}
 
 	hdl, err := trans.NewHandler(srv, opt)

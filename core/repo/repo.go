@@ -48,7 +48,7 @@ func (k *Keeper) Add(usr ent.User) (ent.User, error) {
 	if err := k.repo.QueryRow(SQL, usr.FullName, usr.Email, usr.Password).
 		Scan(&usr.ID, &usr.CreatedAt); err != nil {
 		log.Printf("error occured inserting %+v: %v", usr, err)
-		return ent.User{}, ErrInsertingValue
+		return ent.User{}, fmt.Errorf("%v; %w", ErrInsertingValue, err)
 	}
 
 	return usr, nil
@@ -56,11 +56,9 @@ func (k *Keeper) Add(usr ent.User) (ent.User, error) {
 
 // CreateTable will create table using given DDL query
 func (k *Keeper) CreateTable(q string) error {
-	res, err := k.repo.Exec(q)
+	_, err := k.repo.Exec(q)
 	if err != nil {
 		return err
 	}
-	log.Printf("table created successfully: %v", res)
-
 	return nil
 }

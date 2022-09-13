@@ -6,8 +6,8 @@ import (
 
 const (
 	fullNamePattern = `^[\p{L}a-zA-Z&\s-'’.]{2,256}$`
-	emailPattern    = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-	passwordPattern = "^.{8,256}$"
+	emailPattern    = `^[A-Za-z0-9\.-]+@[A-Za-z]+\.[a-z]{2,3}$`
+	passwordPattern = `^.{8,256}$` // do we need to put any constraint on passwords except length?
 )
 
 func IsValidEmail(str string) bool {

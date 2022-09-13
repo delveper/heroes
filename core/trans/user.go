@@ -1,7 +1,6 @@
 package trans
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/delveper/heroes/core/ent"
@@ -31,15 +30,17 @@ func UserHandler(hdl *Handler) http.Handler {
 func (hdl *Handler) Add(rw http.ResponseWriter, req *http.Request) {
 	usr := ent.User{}
 	if err := decodeBody(req, &usr); err != nil {
-		respondHTTPErr(rw, req, http.StatusInternalServerError)
-		return
-	}
-	fmt.Printf("%+v", usr)
-	usr, err := hdl.Service.Add(usr)
-	if err != nil {
-		respondHTTPErr(rw, req, http.StatusBadRequest)
+		respondErr(rw, req, http.StatusInternalServerError, err)
 		return
 	}
 
-	respond(rw, req, http.StatusCreated, usr)
+	usr, err := hdl.Service.Add(usr)
+	switch {
+	case err == ent.ErrEmailExists:
+		respondErr(rw, req, http.StatusConflict, err)
+	case err != nil:
+		respondErr(rw, req, http.StatusBadRequest, err)
+	default:
+		respond(rw, req, http.StatusCreated, usr)
+	}
 }
