@@ -39,7 +39,7 @@ func (hdl *Handler) Add(rw http.ResponseWriter, req *http.Request) {
 	case err == ent.ErrEmailExists:
 		respondErr(rw, req, http.StatusConflict, err)
 	case err != nil:
-		respondErr(rw, req, http.StatusBadRequest, err)
+		respondErr(rw, req, http.StatusUnprocessableEntity, err)
 	default:
 		respond(rw, req, http.StatusCreated, usr)
 	}

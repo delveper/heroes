@@ -13,23 +13,39 @@ paths:
   /users:
     post:
       summary: Create a user, returns an object
-      operationId: createUser
+      operationId: Add
       requestBody:
-        description: user to add
+        description: basic stuff
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/User"
         required: true
       responses:
+
         201:
-          description: User created response
+          description: User successfully created
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
-        default:
-          description: unexpected error
+
+        422:
+          description: User is invalid
+          content:
+           application/json:
+              schema:
+               $ref: "#/components/schemas/User"
+
+        409:
+          description: Users provided email that already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+        500:
+          description: Unexpected error
           content:
             application/json:
               schema:
@@ -41,8 +57,8 @@ components:
       type: object
       properties:
         id:
-          type: integer
-          format: uint
+          type: string
+          format: uuid
           minLength: 36
           maxLength: 36
         fullname:
