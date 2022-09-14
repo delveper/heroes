@@ -4,7 +4,12 @@ info:
   description: Made by Super Puper Heroes
   version: 0.0.0
 servers:
-  - url: 'http://localhost:8080'
+  - url: "https://{hostname}:{port}"
+    variables:
+      hostname:
+        default: localhost
+      port:
+        default: "8080"
     description: Local development
 
 #https://swagger.io/docs/specification/basic-structure/
@@ -24,7 +29,7 @@ paths:
       responses:
 
         201:
-          description: User successfully created
+          description: User is OK
           content:
             application/json:
               schema:
@@ -55,6 +60,10 @@ components:
   schemas:
     User:
       type: object
+      required:
+        - fullname
+        - email
+        - password
       properties:
         id:
           type: string
@@ -63,16 +72,14 @@ components:
           maxLength: 36
         fullname:
           type: string
-          required: true
           minLength: 3
           maxLength: 256
         email:
           type: string
-          required: true
+          format: email
           uniqueItems: true
         password:
           type: string
-          required: true
           minLength: 8
           maxLength: 256
         createdAt:

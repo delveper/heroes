@@ -15,7 +15,7 @@ services:
     volumes:
       - repo_postgres:/var/lib/postgresql/data
   api:
-    build: .
+    build: ..
     container_name: "heroes-rest-api"
     ports:
       - "8080:8080"
