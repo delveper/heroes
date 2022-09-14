@@ -1,8 +1,7 @@
 package cfg
 
 import (
-	"log"
-	"os"
+	_ "embed"
 	"time"
 
 	"gopkg.in/yaml.v3"
@@ -43,25 +42,15 @@ type User struct {
 	MandatoryParams []string `yaml:"mandatory_params"`
 }
 
-const defaultPath = "./cfg/config.yml"
-
 func NewOptions() (*Options, error) { return load(&Options{}) }
+
+//go:embed config.yml
+var configYml []byte
 
 // Load retrieve a config data from file
 // we can pass here any struct type if we wish retrieve partial config
 func load[C *Options](dst C) (C, error) {
-	file, err := os.Open(defaultPath)
-	if err != nil {
-		return nil, err
-	}
-
-	defer func(*os.File) {
-		if err = file.Close(); err != nil {
-			log.Println(err)
-		}
-	}(file)
-
-	if err := yaml.NewDecoder(file).Decode(&dst); err != nil {
+	if err := yaml.Unmarshal(configYml, &dst); err != nil {
 		return nil, err
 	}
 
