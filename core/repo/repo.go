@@ -16,9 +16,7 @@ var (
 	ErrInsertingValue = errors.New("could not insert values into table")
 )
 
-type Keeper struct {
-	repo *sql.DB
-}
+type Keeper struct{ *sql.DB }
 
 // NewKeeper returns pointer receiver
 // to new Peeper with database options
@@ -36,16 +34,16 @@ func NewKeeper(opt *cfg.Options) (*Keeper, error) {
 		return nil, err
 	}
 
-	return &Keeper{repo: db}, nil
+	return &Keeper{db}, nil
 }
 
 // Add creates new record in database table user
-func (k *Keeper) Add(usr ent.User) (ent.User, error) {
+func (kpr *Keeper) Add(usr ent.User) (ent.User, error) {
 	SQL := `INSERT INTO "user" (full_name, email, password)
 				VALUES($1, $2, crypt($3, gen_salt('md5')))
 					RETURNING id,  created_at;`
 
-	if err := k.repo.QueryRow(SQL, usr.FullName, usr.Email, usr.Password).
+	if err := kpr.QueryRow(SQL, usr.FullName, usr.Email, usr.Password).
 		Scan(&usr.ID, &usr.CreatedAt); err != nil {
 		log.Printf("error occured inserting %+v: %v", usr, err)
 		return ent.User{}, fmt.Errorf("%v; %w", ErrInsertingValue, err)
@@ -55,8 +53,8 @@ func (k *Keeper) Add(usr ent.User) (ent.User, error) {
 }
 
 // CreateTable will create table using given DDL query
-func (k *Keeper) CreateTable(q string) error {
-	_, err := k.repo.Exec(q)
+func (kpr *Keeper) CreateTable(q string) error {
+	_, err := kpr.Exec(q)
 	if err != nil {
 		return err
 	}
