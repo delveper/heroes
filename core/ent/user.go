@@ -19,12 +19,6 @@ var (
 	ErrDuplicateConstraint = errors.New("duplicate key value violates unique constraint") // feels not OK
 )
 
-// not sure about that
-// hard coding feels less appropriate
-//
-//go:embed user.sql
-var createTableSQL string
-
 // User is a key entity
 type User struct {
 	ID        string    `json:"id" sql:"id"` //  uuid.UUID
@@ -37,7 +31,7 @@ type User struct {
 // UserKeeper defines an interface
 // we want our logic to implement
 type UserKeeper interface {
-	CreateTable(string) error
+	CreateTable() error
 	Add(User) (User, error)
 }
 
@@ -86,7 +80,7 @@ func (usr *User) Validate() (err error) {
 // CreateTable will create table using
 // embedded SQL that stored in createTableSQL variable
 func (srv *Service) CreateTable() error {
-	return srv.Keeper.CreateTable(createTableSQL)
+	return srv.Keeper.CreateTable()
 }
 
 // Add will add new user to database

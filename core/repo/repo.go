@@ -2,6 +2,7 @@ package repo
 
 import (
 	"database/sql"
+	_ "embed"
 	"errors"
 	"fmt"
 	"log"
@@ -51,9 +52,12 @@ func (kpr *Keeper) Add(usr ent.User) (ent.User, error) {
 	return usr, nil
 }
 
+//go:embed sql/user.sql
+var userSQL string
+
 // CreateTable will create table using given DDL query
-func (kpr *Keeper) CreateTable(q string) error {
-	_, err := kpr.Exec(q)
+func (kpr *Keeper) CreateTable() error {
+	_, err := kpr.Exec(userSQL)
 	if err != nil {
 		return err
 	}
