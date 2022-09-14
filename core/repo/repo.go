@@ -19,8 +19,7 @@ var (
 type Keeper struct{ *sql.DB }
 
 // NewKeeper returns pointer receiver
-// to new Peeper with database options
-// from out the box
+// to new Keeper with database options out of the box
 func NewKeeper(opt *cfg.Options) (*Keeper, error) {
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		opt.Repo.Host, opt.Repo.Port, opt.Repo.UserName, opt.Repo.Password, opt.Repo.DbName)
