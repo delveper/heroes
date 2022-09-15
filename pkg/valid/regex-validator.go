@@ -1,4 +1,8 @@
-package move
+// DISCLAIMER:
+// all code below is written because of self-educational reasons
+// and can be considered as huge overkill
+
+package valid
 
 import (
 	"errors"
@@ -7,13 +11,11 @@ import (
 	"regexp"
 )
 
-// DISCLAIMER:
-// all code below is written because of self-educational reasons
-// and can be considered as huge overkill
+const defaultKey = "regex"
 
-// ValidateRegex validate struct fields
+// StructRegex validates struct fields
 // according to given regex tag
-func ValidateRegex(src any) (err error) {
+func StructRegex(src any) (err error) {
 	valOf := reflect.Indirect(reflect.ValueOf(src))
 	// struct structName
 	var structName string
@@ -40,7 +42,7 @@ func ValidateRegex(src any) (err error) {
 		}
 		// recursive call for nested structs
 		if field.Type().Kind() == reflect.Struct {
-			if err := ValidateRegex(field.Interface()); err != nil {
+			if err := StructRegex(field.Interface()); err != nil {
 				return err
 			}
 		}
@@ -53,7 +55,7 @@ func ValidateRegex(src any) (err error) {
 // that did not meet our expectations
 func getTag(tag reflect.StructTag, key string) (string, bool) {
 	str := fmt.Sprintf("%v", tag)
-	pattern := fmt.Sprintf(`(?s)\s*(?P<key>%s):\"(?P<value>[^\"]+)\"`, key)
+	pattern := fmt.Sprintf(`(?s)\s*(?P<key>%s):\"(?P<value>[^\"]+)\"`, defaultKey)
 
 	re := regexp.MustCompile(pattern)
 	if !re.MatchString(str) {
