@@ -12,7 +12,7 @@ type User struct {
 	ID        string    `json:"id"` // may be uuid.UUID
 	FullName  string    `json:"full_name" regex:"^[\p{L}a-zA-Z&\s-'’.]{2,255}$"`
 	Email     string    `json:"email" regex:"^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"`
-	Password  string    `json:"password" regex:"^.{8,255}$" dfdfdf:"dfsfsaf"`
+	Password  string    `json:"password" regex:"^.{8,255}$"`
 	CreatedAt time.Time `json:"created_at"`
 }
 

@@ -1,6 +1,6 @@
 // DISCLAIMER:
-// all code below is full of black magic and has written
-// because of self-educational reasons
+// all code below is full of black magic
+// btw it works well and gives more flexibility in returning errors
 
 package black
 
@@ -25,7 +25,7 @@ func ValidateStruct(src any) (err error) {
 		structName = valOf.Type().Name()
 	}
 
-	defer func() { // we do not panic but this part made just in case
+	defer func() { // we do not want to panic but this part was made just in case
 		if r := recover(); r != nil {
 			err = ErrUnexpected
 		}
