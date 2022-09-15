@@ -2,21 +2,11 @@ package ent
 
 import (
 	_ "embed"
-	"errors"
 	"log"
 	"strings"
 	"time"
 
 	"github.com/google/uuid"
-)
-
-var (
-	ErrCreatingUser        = errors.New("could not create user")
-	ErrInvalidEmail        = errors.New("user has to have valid email address")
-	ErrEmailExists         = errors.New("user has to have unique email")
-	ErrInvalidPassword     = errors.New("user has to have valid password")
-	ErrInvalidName         = errors.New("user has to have valid name")
-	ErrDuplicateConstraint = errors.New("duplicate key value violates unique constraint") // feels not OK
 )
 
 // User is a key entity
@@ -86,10 +76,12 @@ func (serv *Service) CreateTable() error {
 // Add will add new user to database
 // name of method might be changed
 func (serv *Service) Add(usr User) (User, error) {
-	if err := usr.Validate(); err != nil {
-		log.Printf("error occured validating %+v: %v", usr, err)
-		return User{}, err
-	}
+	// we will handle validation on transport layer
+
+	// if err := usr.Validate(); err != nil {
+	// 	log.Printf("error occurred validating %+v: %v", usr, err)
+	// 	return User{}, err
+	// }
 
 	usr, err := serv.Keeper.Add(usr)
 	if err != nil {

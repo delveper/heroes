@@ -1,9 +1,11 @@
 package move
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/delveper/heroes/core/ent"
+	"github.com/delveper/heroes/pkg/valid"
 )
 
 type UserService interface { // we can use here repo.UserKeeper instead
@@ -32,6 +34,14 @@ func (lug *Lug) Add(rw http.ResponseWriter, req *http.Request) {
 	if err := decodeBody(req, &usr); err != nil {
 		respondErr(rw, req, http.StatusInternalServerError, err)
 		return
+	}
+
+	switch err := valid.StructRegex(usr); {
+	case errors.Is(err, valid.ErrInternal):
+		respondErr(rw, req, http.StatusInternalServerError, err)
+	case err == nil:
+	default:
+
 	}
 
 	usr, err := lug.Service.Add(usr)

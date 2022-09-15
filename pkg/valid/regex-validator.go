@@ -13,6 +13,8 @@ import (
 
 const defaultKey = "regex"
 
+var ErrInternal = errors.New("reflect is fun")
+
 // StructRegex validates struct fields
 // according to given regex tag
 func StructRegex(src any) (err error) {
@@ -25,7 +27,7 @@ func StructRegex(src any) (err error) {
 
 	defer func() { // we do not panic but this part made just in case
 		if r := recover(); r != nil {
-			err = errors.New("reflect is fun")
+			err = ErrInternal
 		}
 	}()
 
