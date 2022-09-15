@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"reflect"
 	"regexp"
+	"strings"
 )
 
 const defaultKey = "regex"
@@ -19,10 +20,10 @@ var ErrUnexpected = errors.New("unexpected error has occurred")
 // according to given regex tag
 func ValidateStruct(src any) (err error) {
 	valOf := reflect.Indirect(reflect.ValueOf(src))
-	// structName
+
 	var structName string
 	if structName == "" {
-		structName = valOf.Type().Name()
+		structName = strings.ToLower(valOf.Type().Name())
 	}
 
 	defer func() { // we do not want to panic but this part was made just in case
@@ -37,8 +38,9 @@ func ValidateStruct(src any) (err error) {
 		tags := valOf.Type().Field(i).Tag
 		if tag, ok := getTag(tags, "regex"); ok {
 			fieldVal := fmt.Sprintf("%v", field.Interface())
+
 			if !regexp.MustCompile(tag).MatchString(fieldVal) {
-				fieldName := valOf.Type().Field(i).Name
+				fieldName := strings.ToLower(valOf.Type().Field(i).Name)
 				return fmt.Errorf("%s has to have valid %s", structName, fieldName)
 			}
 		}
@@ -57,7 +59,7 @@ func ValidateStruct(src any) (err error) {
 // that did not meet our expectations
 func getTag(tag reflect.StructTag, key string) (string, bool) {
 	str := fmt.Sprintf("%v", tag)
-	pattern := fmt.Sprintf(`(?s)\s*(?P<key>%s):\"(?P<value>[^\"]+)\"`, defaultKey)
+	pattern := fmt.Sprintf(`(?s)(?i)\s*(?P<key>%s):\"(?P<value>[^\"]+)\"`, defaultKey)
 
 	re := regexp.MustCompile(pattern)
 	if !re.MatchString(str) {
@@ -66,5 +68,5 @@ func getTag(tag reflect.StructTag, key string) (string, bool) {
 
 	match := re.FindStringSubmatch(str)
 
-	return match[len(match)-1], true
+	return match[2], true
 }
