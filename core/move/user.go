@@ -2,15 +2,20 @@ package move
 
 import (
 	"errors"
+	"log"
 	"net/http"
 
 	"github.com/delveper/heroes/core/ent"
-	"github.com/delveper/heroes/pkg/valid"
+	"github.com/delveper/heroes/pkg/black"
 )
 
 type UserService interface { // we can use here repo.UserKeeper instead
 	Add(ent.User) (ent.User, error)
 }
+
+var (
+	ErrUnexpected = errors.New("unexpected error has occurred")
+)
 
 // TODO: handle errors gracefully
 
@@ -36,21 +41,24 @@ func (lug *Lug) Add(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	switch err := valid.StructRegex(usr); {
-	case errors.Is(err, valid.ErrInternal):
-		respondErr(rw, req, http.StatusInternalServerError, err)
-	case err == nil:
+	// validate usr
+	switch err := black.ValidateStruct(usr); {
+	case err == nil: // move forward
+	case err == black.ErrUnexpected:
+		respondErr(rw, req, http.StatusInternalServerError, ErrUnexpected)
 	default:
-
+		respondErr(rw, req, http.StatusUnprocessableEntity, err)
+		return
 	}
 
-	usr, err := lug.Service.Add(usr)
-	switch {
-	case err == ent.ErrEmailExists:
-		respondErr(rw, req, http.StatusConflict, err)
-	case err != nil:
-		respondErr(rw, req, http.StatusUnprocessableEntity, err)
-	default:
+	// add usr
+	switch usr, err := lug.Service.Add(usr); {
+	case err == nil:
 		respond(rw, req, http.StatusCreated, usr)
+	case errors.Is(err, ent.ErrEmailExists):
+		respondErr(rw, req, http.StatusConflict, err)
+	default:
+		log.Println(err)
+		respondErr(rw, req, http.StatusInternalServerError, ErrUnexpected)
 	}
 }

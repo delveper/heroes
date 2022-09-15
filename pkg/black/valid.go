@@ -1,8 +1,8 @@
 // DISCLAIMER:
-// all code below is written because of self-educational reasons
-// and can be considered as huge overkill
+// all code below is full of black magic and has written
+// because of self-educational reasons
 
-package valid
+package black
 
 import (
 	"errors"
@@ -13,13 +13,13 @@ import (
 
 const defaultKey = "regex"
 
-var ErrInternal = errors.New("reflect is fun")
+var ErrUnexpected = errors.New("unexpected error has occurred")
 
-// StructRegex validates struct fields
+// ValidateStruct validates struct fields
 // according to given regex tag
-func StructRegex(src any) (err error) {
+func ValidateStruct(src any) (err error) {
 	valOf := reflect.Indirect(reflect.ValueOf(src))
-	// struct structName
+	// structName
 	var structName string
 	if structName == "" {
 		structName = valOf.Type().Name()
@@ -27,7 +27,7 @@ func StructRegex(src any) (err error) {
 
 	defer func() { // we do not panic but this part made just in case
 		if r := recover(); r != nil {
-			err = ErrInternal
+			err = ErrUnexpected
 		}
 	}()
 
@@ -44,7 +44,7 @@ func StructRegex(src any) (err error) {
 		}
 		// recursive call for nested structs
 		if field.Type().Kind() == reflect.Struct {
-			if err := StructRegex(field.Interface()); err != nil {
+			if err := ValidateStruct(field.Interface()); err != nil {
 				return err
 			}
 		}

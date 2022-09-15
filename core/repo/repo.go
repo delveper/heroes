@@ -45,6 +45,7 @@ func (kpr *Keeper) Add(usr ent.User) (ent.User, error) {
 
 	if err := kpr.QueryRow(SQL, usr.FullName, usr.Email, usr.Password).
 		Scan(&usr.ID, &usr.CreatedAt); err != nil {
+		// TODO: Handle errors gracefully
 		log.Printf("error occured inserting %+v: %v", usr, err)
 		return ent.User{}, fmt.Errorf("%v; %w", ErrInsertingValue, err)
 	}
