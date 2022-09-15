@@ -21,11 +21,11 @@ var (
 
 // User is a key entity
 type User struct {
-	ID        string    `json:"id" sql:"id"` //  uuid.UUID
-	FullName  string    `json:"full_name" sql:"full_name"`
-	Email     string    `json:"email" sql:"email"`
-	Password  string    `json:"password" sql:"password"`
-	CreatedAt time.Time `json:"created_at" sql:"created_at"`
+	ID        string    `json:"id"` //  uuid.UUID
+	FullName  string    `json:"full_name" regex:"^[\p{L}a-zA-Z&\s-'’.]{2,255}$"`
+	Email     string    `json:"email" regex:"^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"`
+	Password  string    `json:"password" regex:"^.{8,255}$" dfdfdf:"dfsfsaf"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 // UserKeeper defines an interface
@@ -79,19 +79,19 @@ func (usr *User) Validate() (err error) {
 
 // CreateTable will create table using
 // embedded SQL that stored in createTableSQL variable
-func (srv *Service) CreateTable() error {
-	return srv.Keeper.CreateTable()
+func (serv *Service) CreateTable() error {
+	return serv.Keeper.CreateTable()
 }
 
 // Add will add new user to database
 // name of method might be changed
-func (srv *Service) Add(usr User) (User, error) {
+func (serv *Service) Add(usr User) (User, error) {
 	if err := usr.Validate(); err != nil {
 		log.Printf("error occured validating %+v: %v", usr, err)
 		return User{}, err
 	}
 
-	usr, err := srv.Keeper.Add(usr)
+	usr, err := serv.Keeper.Add(usr)
 	if err != nil {
 		log.Printf("error occured creating user: %v", err)
 

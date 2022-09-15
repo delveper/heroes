@@ -6,8 +6,8 @@ import (
 
 	"github.com/delveper/heroes/cfg"
 	"github.com/delveper/heroes/core/ent"
+	"github.com/delveper/heroes/core/move"
 	"github.com/delveper/heroes/core/repo"
-	"github.com/delveper/heroes/core/trans"
 )
 
 func main() {
@@ -34,9 +34,9 @@ func Run() error {
 		return fmt.Errorf("failed make changes to database: %w", err)
 	}
 
-	hdl, err := trans.NewHandler(srv, opt)
+	lug, err := move.NewLug(srv, opt)
 
-	if err := hdl.Serve(); err != nil {
+	if err := lug.Serve(); err != nil {
 		return fmt.Errorf("failed to set up handler: %w", err)
 	}
 
