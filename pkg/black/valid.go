@@ -1,5 +1,3 @@
-// DISCLAIMER: TL;DR
-
 package black
 
 import (
