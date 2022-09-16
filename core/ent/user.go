@@ -8,8 +8,8 @@ import (
 )
 
 // User is a key entity
-// custom tag `regex` was designed for fields validation
-// and its implementation lives in ./pkg/black
+// custom tag `regex` was designed for field validation
+// its implementation lives in ./pkg/black
 type User struct {
 	ID        string    `json:"id"` // may be uuid.UUID
 	FullName  string    `json:"full_name" regex:"(?i)^[\p{L}A-Z&\s-'’.]{2,255}$"`

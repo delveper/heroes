@@ -38,7 +38,7 @@ func ValidateStruct(src any) (err error) {
 		field := valOf.Field(i)
 		// check re tag if any is present
 		tags := valOf.Type().Field(i).Tag
-		if tag, ok := getTag(tags, "regex"); ok {
+		if tag, ok := getTag(tags, defaultKey); ok {
 			fieldVal := fmt.Sprintf("%v", field.Interface())
 
 			if !regexp.MustCompile(tag).MatchString(fieldVal) {
