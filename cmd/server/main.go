@@ -33,12 +33,11 @@ func Run() error {
 		return fmt.Errorf("failed to set up repo: %w", err)
 	}
 
-	agt = ent.NewAgent(kpr)
-
-	// TODO: Take care of all migrations
 	if err = kpr.MakeMigrations(); err != nil {
 		return fmt.Errorf("failed make changes to repo: %w", err)
 	}
+
+	agt = ent.NewAgent(kpr)
 
 	mvr = sply.NewMover(agt, opt)
 
