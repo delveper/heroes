@@ -42,6 +42,7 @@ func (mvr *Mover) RegisterRoutes() {
 		Wrap(mvr.HandleUser(), // main handler for the endpoint that will be http method aware
 			WithJSON, // here we can insert e all king of middleware
 		))
+	// to be continue...
 }
 
 func (mvr *Mover) Serve() error {

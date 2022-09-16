@@ -69,5 +69,6 @@ func ValidateStruct(src any) (err error) {
 		}
 	}
 
+	// TODO: How do return nil err explicitly if we use defer recover?
 	return err
 }
