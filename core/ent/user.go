@@ -8,6 +8,8 @@ import (
 )
 
 // User is a key entity
+// custom tag `regex` was designed for fields validation
+// and its implementation lives in ./pkg/black
 type User struct {
 	ID        string    `json:"id"` // may be uuid.UUID
 	FullName  string    `json:"full_name" regex:"(?i)^[\p{L}A-Z&\s-'’.]{2,255}$"`
@@ -25,18 +27,17 @@ var (
 // UserKeeper defines an interface
 // we want our logic to implement
 type UserKeeper interface {
-	CreateTable() error
 	Add(User) (User, error)
 }
 
-type Service struct {
+type Agent struct {
 	Keeper UserKeeper
 }
 
-// NewService is proverbial case
+// NewAgent is proverbial case
 // about passing interfaces and returning structs
-func NewService(uk UserKeeper) *Service {
-	return &Service{Keeper: uk}
+func NewAgent(uk UserKeeper) *Agent {
+	return &Agent{Keeper: uk}
 }
 
 // TODO: feels like something is missing
@@ -47,14 +48,9 @@ func (usr *User) Clean() {
 	usr.Email = strings.TrimSpace(usr.Email)
 }
 
-// CreateTable is what it is
-func (serv *Service) CreateTable() error {
-	return serv.Keeper.CreateTable()
-}
-
 // Add will create new user and add it to database
-func (serv *Service) Add(usr User) (User, error) {
-	usr, err := serv.Keeper.Add(usr)
+func (agt *Agent) Add(usr User) (User, error) {
+	usr, err := agt.Keeper.Add(usr)
 	if err != nil {
 		// feels stupid
 		if strings.Contains(err.Error(), ErrDuplicateConstraint.Error()) {

@@ -6,8 +6,8 @@ import (
 
 	"github.com/delveper/heroes/cfg"
 	"github.com/delveper/heroes/core/ent"
-	"github.com/delveper/heroes/core/move"
 	"github.com/delveper/heroes/core/repo"
+	"github.com/delveper/heroes/core/sply"
 )
 
 func main() {
@@ -17,27 +17,33 @@ func main() {
 }
 
 func Run() error {
-	opt, err := cfg.NewOptions()
-	if err != nil {
+	var (
+		opt *cfg.Options
+		kpr *repo.Keeper
+		agt *ent.Agent
+		mvr *sply.Mover
+		err error
+	)
+
+	if opt, err = cfg.NewOptions(); err != nil {
 		return fmt.Errorf("failed to load config: %w", err)
 	}
 
-	kpr, err := repo.NewKeeper(opt)
-	if err != nil {
+	if kpr, err = repo.NewKeeper(opt); err != nil {
 		return fmt.Errorf("failed to set up repo: %w", err)
 	}
 
-	srv := ent.NewService(kpr)
+	agt = ent.NewAgent(kpr)
 
-	// it feels like something is missing here, and we need to redesign all
-	if err := srv.CreateTable(); err != nil {
-		return fmt.Errorf("failed make changes to database: %w", err)
+	// TODO: Take care of all migrations
+	if err = kpr.MakeMigrations(); err != nil {
+		return fmt.Errorf("failed make changes to repo: %w", err)
 	}
 
-	lug, err := move.NewLug(srv, opt)
+	mvr = sply.NewMover(agt, opt)
 
-	if err := lug.Serve(); err != nil {
-		return fmt.Errorf("failed to set up handler: %w", err)
+	if err = mvr.Serve(); err != nil {
+		return fmt.Errorf("failed to run logistics: %w", err)
 	}
 
 	return nil

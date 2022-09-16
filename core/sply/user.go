@@ -1,4 +1,4 @@
-package move
+package sply
 
 import (
 	"errors"
@@ -9,7 +9,7 @@ import (
 	"github.com/delveper/heroes/pkg/black"
 )
 
-type UserService interface { // we can use here repo.UserKeeper instead
+type UserMover interface { // we can use here repo.UserKeeper instead
 	Add(ent.User) (ent.User, error)
 }
 
@@ -19,11 +19,11 @@ var (
 
 // TODO: handle errors gracefully
 
-func (lug *Lug) HandleUser() http.Handler {
+func (mvr *Mover) HandleUser() http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		switch req.Method {
 		case http.MethodPost:
-			lug.Add(rw, req)
+			mvr.Add(rw, req)
 		case http.MethodGet:
 		case http.MethodPut:
 		case http.MethodDelete:
@@ -34,7 +34,7 @@ func (lug *Lug) HandleUser() http.Handler {
 }
 
 // Add is a method creating user
-func (lug *Lug) Add(rw http.ResponseWriter, req *http.Request) {
+func (mvr *Mover) Add(rw http.ResponseWriter, req *http.Request) {
 	usr := ent.User{}
 	if err := decodeBody(req, &usr); err != nil {
 		respondErr(rw, req, http.StatusInternalServerError, err)
@@ -52,7 +52,7 @@ func (lug *Lug) Add(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	// add usr
-	switch usr, err := lug.Service.Add(usr); {
+	switch usr, err := mvr.Agent.Add(usr); {
 	case err == nil:
 		respond(rw, req, http.StatusCreated, usr)
 	case errors.Is(err, ent.ErrEmailExists):

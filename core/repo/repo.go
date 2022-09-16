@@ -13,7 +13,6 @@ import (
 )
 
 var (
-	ErrCreatingTable  = errors.New("could not create table")
 	ErrInsertingValue = errors.New("could not insert values into table")
 )
 
@@ -37,6 +36,20 @@ func NewKeeper(opt *cfg.Options) (*Keeper, error) {
 	return &Keeper{db}, nil
 }
 
+//go:embed sql/user.sql
+var userSQL string
+
+// MakeMigrations will create table using given DDL query
+// un out particular case only user table
+func (kpr *Keeper) MakeMigrations() error {
+	res, err := kpr.Exec(userSQL)
+	if err != nil {
+		return fmt.Errorf("error has occured making migrations: %w", err)
+	}
+	log.Printf("migrations were made: %+v", res)
+	return nil
+}
+
 // Add creates new record in database table user
 func (kpr *Keeper) Add(usr ent.User) (ent.User, error) {
 	SQL := `INSERT INTO "user" (full_name, email, password)
@@ -51,16 +64,4 @@ func (kpr *Keeper) Add(usr ent.User) (ent.User, error) {
 	}
 
 	return usr, nil
-}
-
-//go:embed sql/user.sql
-var userSQL string
-
-// CreateTable will create table using given DDL query
-func (kpr *Keeper) CreateTable() error {
-	_, err := kpr.Exec(userSQL)
-	if err != nil {
-		return err
-	}
-	return nil
 }
