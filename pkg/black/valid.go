@@ -13,7 +13,6 @@ import (
 const defaultKey = "regex"
 
 var (
-	ErrInvalidSrc = errors.New("input value must be struct")
 	ErrUnexpected = errors.New("unexpected error has occurred")
 )
 
