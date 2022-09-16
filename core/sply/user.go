@@ -43,7 +43,9 @@ func (mvr *Mover) Add(rw http.ResponseWriter, req *http.Request) {
 
 	case err == nil: // move forward
 
-	case errors.As(err, new(*black.ValidationError)): // we do need pointer squared here
+	// we do need pointer receiver squared here,
+	// I am the victim of the circumstances :)
+	case errors.As(err, new(*black.ValidationError)):
 		log.Println(err)
 		respondErr(rw, req, http.StatusUnprocessableEntity, errors.Unwrap(err))
 		return

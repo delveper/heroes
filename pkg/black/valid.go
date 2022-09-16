@@ -55,6 +55,7 @@ func ValidateStruct(src any) (err error) {
 		fieldType := srcValue.Type().Field(i)
 
 		// check regex <key> if any is exists and retrieve its <value> => match[2]
+		// .Tag.Lookup() would not work here because of special characters
 		tagAll := fmt.Sprintf("%v", srcValue.Type().Field(i).Tag)
 		tagValue := fmt.Sprintf(`(?s)(?i)\s*(?P<key>%s):\"(?P<value>[^\"]+)\"`, defaultKey)
 
