@@ -2,7 +2,6 @@ package ent
 
 import (
 	_ "embed"
-	"errors"
 	"strings"
 	"time"
 )
@@ -17,10 +16,6 @@ type User struct {
 	Password  string    `json:"password" regex:"^.{8,255}$"`
 	CreatedAt time.Time `json:"created_at"`
 }
-
-var (
-	ErrEmailExists = errors.New("email already exists") // dunno where to keep this
-)
 
 // UserKeeper defines an interface
 // we want our logic to implement
