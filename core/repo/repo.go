@@ -8,12 +8,13 @@ import (
 	"log"
 
 	"github.com/delveper/heroes/cfg"
-	"github.com/delveper/heroes/core/ent"
 	_ "github.com/lib/pq"
 )
 
 var (
-	ErrInsertingValue = errors.New("could not insert values into table")
+	ErrInsertingValue      = errors.New("could not insert values into table")
+	ErrDuplicateConstraint = errors.New("duplicate key value violates unique constraint")
+	ErrEmailExists         = errors.New("email already exists")
 )
 
 type Keeper struct{ *sql.DB }
@@ -48,20 +49,4 @@ func (kpr *Keeper) MakeMigrations() error {
 	}
 	log.Printf("migrations were made: %+v", res)
 	return nil
-}
-
-// Add creates new record in database table user
-func (kpr *Keeper) Add(usr ent.User) (ent.User, error) {
-	SQL := `INSERT INTO "user" (full_name, email, password)
-				VALUES($1, $2, crypt($3, gen_salt('md5')))
-					RETURNING id,  created_at;`
-
-	if err := kpr.QueryRow(SQL, usr.FullName, usr.Email, usr.Password).
-		Scan(&usr.ID, &usr.CreatedAt); err != nil {
-		// TODO: Handle errors gracefully
-		log.Printf("error occured inserting %+v: %v", usr, err)
-		return ent.User{}, fmt.Errorf("%v; %w", ErrInsertingValue, err)
-	}
-
-	return usr, nil
 }

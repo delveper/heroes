@@ -11,17 +11,15 @@ import (
 // custom tag `regex` was designed for field validation
 // its implementation lives in ./pkg/black
 type User struct {
-	ID        string    `json:"id"` // may be uuid.UUID
-	FullName  string    `json:"full_name" regex:"(?i)^[\p{L}A-Z&\s-'’.]{2,255}$"`
+	ID        string    `json:"id"`                                               // may be uuid.UUID
+	FullName  string    `json:"full_name" regex:"(?i)^[\p{L}A-Z&\s-'’.]{2,255}$"` //
 	Email     string    `json:"email" regex:"(?i)^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$"`
 	Password  string    `json:"password" regex:"^.{8,255}$"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
 var (
-	ErrDuplicateConstraint = errors.New("duplicate key value violates unique constraint")
-	ErrEmailExists         = errors.New("email already exists")
-	ErrCreatingUser        = errors.New("could not create user")
+	ErrEmailExists = errors.New("email already exists") // dunno where to keep this
 )
 
 // UserKeeper defines an interface
@@ -50,14 +48,5 @@ func (usr *User) Clean() {
 
 // Add will create new user and add it to database
 func (agt *Agent) Add(usr User) (User, error) {
-	usr, err := agt.Keeper.Add(usr)
-	if err != nil {
-		// feels stupid
-		if strings.Contains(err.Error(), ErrDuplicateConstraint.Error()) {
-			return User{}, ErrEmailExists
-		}
-		return User{}, ErrCreatingUser
-	}
-
-	return usr, nil
+	return agt.Keeper.Add(usr)
 }

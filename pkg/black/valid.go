@@ -14,6 +14,17 @@ var (
 	ErrUnexpected = errors.New("unexpected error has occurred")
 )
 
+// ValidationError is what it is
+// we can catch it type in logistics level using errors.As()
+type ValidationError struct {
+	entity   string
+	property string
+}
+
+func (err *ValidationError) Error() string {
+	return strings.ToLower(fmt.Sprintf("%s has to have valid %v", err.entity, err.property))
+}
+
 // ValidateStruct validates struct fields
 // according to given regex tag
 func ValidateStruct(src any) (err error) {
@@ -35,7 +46,7 @@ func ValidateStruct(src any) (err error) {
 
 	// name of the top struct (we will scan all nested structs recursively)
 	if structName == "" {
-		structName = strings.ToLower(srcValue.Type().Name())
+		structName = srcValue.Type().Name()
 	}
 
 	for i := 0; i < srcValue.NumField(); i++ {
@@ -54,9 +65,8 @@ func ValidateStruct(src any) (err error) {
 
 			// validate field value using given regex pattern
 			if !regexp.MustCompile(pattern).MatchString(fieldToCheck) {
-				fieldName := strings.ToLower(fieldType.Name)
-
-				return fmt.Errorf("%s has to have valid %s", structName, fieldName)
+				return fmt.Errorf("error validating: %w",
+					&ValidationError{entity: structName, property: fieldType.Name})
 			}
 		}
 
@@ -69,6 +79,5 @@ func ValidateStruct(src any) (err error) {
 		}
 	}
 
-	// TODO: How do return nil err explicitly if we use defer recover?
 	return err
 }

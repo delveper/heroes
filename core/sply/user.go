@@ -6,16 +6,13 @@ import (
 	"net/http"
 
 	"github.com/delveper/heroes/core/ent"
+	"github.com/delveper/heroes/core/repo"
 	"github.com/delveper/heroes/pkg/black"
 )
 
 type UserMover interface { // we can use here repo.UserKeeper instead
 	Add(ent.User) (ent.User, error)
 }
-
-var (
-	ErrUnexpected = errors.New("unexpected error has occurred")
-)
 
 // TODO: handle errors gracefully
 
@@ -43,22 +40,30 @@ func (mvr *Mover) Add(rw http.ResponseWriter, req *http.Request) {
 
 	// validate usr
 	switch err := black.ValidateStruct(usr); {
+
 	case err == nil: // move forward
-	case err == black.ErrUnexpected:
-		respondErr(rw, req, http.StatusInternalServerError, ErrUnexpected)
+
+	case errors.As(err, new(*black.ValidationError)): // we do need pointer squared here
+		log.Println(err)
+		respondErr(rw, req, http.StatusUnprocessableEntity, errors.Unwrap(err))
+		return
+
 	default:
-		respondErr(rw, req, http.StatusUnprocessableEntity, err)
+		respondErr(rw, req, http.StatusInternalServerError, err)
 		return
 	}
 
 	// add usr
+	// TODO: Handle errors gracefully
 	switch usr, err := mvr.Agent.Add(usr); {
+
 	case err == nil:
 		respond(rw, req, http.StatusCreated, usr)
-	case errors.Is(err, ent.ErrEmailExists):
-		respondErr(rw, req, http.StatusConflict, err)
+
+	case errors.Is(err, repo.ErrEmailExists): // how to decouple from repo and user?
+		respondErr(rw, req, http.StatusConflict, errors.Unwrap(err))
+
 	default:
-		log.Println(err)
-		respondErr(rw, req, http.StatusInternalServerError, ErrUnexpected)
+		respondErr(rw, req, http.StatusInternalServerError, err)
 	}
 }
