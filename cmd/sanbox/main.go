@@ -18,7 +18,7 @@ func main() {
 		CreatedAt: time.Time{},
 	}
 
-	fmt.Println(black.ValidateStruct(usr))
+	fmt.Println(black.GetStructFieldValues(usr))
 
 	// usr := User{
 	// 	FullName: "No name",

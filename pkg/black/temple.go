@@ -1,19 +1,16 @@
 package black
 
-import (
-	"reflect"
-)
-
-type Entity interface {
-	Name() string
-	NonZeroFields() map[string]interface{}
+type Queer interface {
+	Name() (string, error)
+	Fields() ([]StructValue, error)
 }
 
-func HasZeroValue(src any) bool {
-	valOf := reflect.Indirect(reflect.ValueOf(src))
-	return valOf.IsZero()
+type Type struct{}
+
+func (t *Type) Name() (string, error) {
+	return GetStructName(t)
 }
 
-func HasZeroValueGen[T ~int | ~string](val T) bool {
-	return val == *new(T)
+func (t *Type) Fields() ([]StructValue, error) {
+	return GetStructFieldValues(t)
 }
