@@ -10,10 +10,6 @@ import (
 
 const defaultKey = "regex"
 
-var (
-	ErrUnexpected = errors.New("unexpected error has occurred")
-)
-
 // ValidationError is what it is
 // we can catch it type in logistics level using errors.As()
 type ValidationError struct {
@@ -31,8 +27,8 @@ func ValidateStruct(src any) (err error) {
 	// not sure if we need this,
 	// just in case something go wrong
 	defer func() {
-		if r := recover(); r != nil {
-			err = ErrUnexpected
+		if recover() != nil {
+			err = errors.New("unexpected error has occurred")
 		}
 	}()
 
@@ -40,9 +36,9 @@ func ValidateStruct(src any) (err error) {
 
 	// only structs allowed
 	var structName string
-	if srcType := srcValue.Kind(); srcType != reflect.Struct {
-		return fmt.Errorf("input value must be struct, got: %v", srcType)
-	}
+	// if srcType := srcValue.Kind(); srcType != reflect.Struct {
+	// 	return fmt.Errorf("input value must be struct, got: %v", srcType)
+	// }
 
 	// name of the top struct (we will scan all nested structs recursively)
 	if structName == "" {
@@ -80,5 +76,6 @@ func ValidateStruct(src any) (err error) {
 		}
 	}
 
+	// dunno how to return nil explicitly?
 	return err
 }
