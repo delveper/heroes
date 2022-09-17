@@ -75,7 +75,6 @@ func ValidateStruct(src any) (err error) {
 			return err
 		}
 	}
-
 	// dunno how to return nil explicitly?
 	return err
 }
