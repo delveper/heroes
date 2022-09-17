@@ -35,7 +35,7 @@ func NewAgent(uk UserKeeper) *Agent {
 
 // TODO: feels like something is missing
 
-// Clean will make our awesome user clean
+// Clean will make our awesome user like an angel
 func (usr *User) Clean() {
 	usr.FullName = strings.TrimSpace(usr.FullName)
 	usr.Email = strings.TrimSpace(usr.Email)

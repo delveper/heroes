@@ -2,23 +2,34 @@ package main
 
 import (
 	"fmt"
+	"time"
 
+	"github.com/delveper/heroes/core/ent"
 	"github.com/delveper/heroes/pkg/black"
 )
 
-type Name struct {
-	Password string `regex:"^.{8,255}$""`
-}
-
-type User struct {
-	FullName string `regex:"^.{8,234}$"`
-	Name
-}
+type User ent.User
 
 func main() {
-	usr := false
-	if err := black.ValidateStruct(usr); err != nil {
-		fmt.Println(err)
+	usr := ent.User{
+		FullName:  "dfdfafasdf",
+		Email:     "df@dsf.com",
+		Password:  "asd",
+		CreatedAt: time.Time{},
 	}
 
+	fmt.Println(black.ValidateStruct(usr))
+
+	// usr := User{
+	// 	FullName: "No name",
+	// 	Email:    "email",
+	// }
+	// tmp, err := template.New("add").Parse(`SELECT * FROM "{{.FullName}}" WHERE email = {{.Email}} {{.Name}}`)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	//
+	// if err := tmp.Execute(os.Stdout, usr); err != nil {
+	// 	log.Fatal(err)
+	// }
 }
