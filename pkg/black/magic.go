@@ -63,7 +63,7 @@ func GetStructFieldValues(src any) ([]StructValue, error) {
 	for i := 0; i < srcValue.NumField(); i++ {
 		var val StructValue
 
-		if fieldValue := srcValue.Field(i); !fieldValue.IsZero() {
+		if fieldValue := srcValue.Field(i); !fieldValue.IsZero() { // TODO: Gotcha with bool|int
 
 			if fieldTag, ok := GetTagValue(srcValue.Type().Field(i).Tag, "sql"); ok {
 

@@ -47,9 +47,8 @@ func NewOptions() (*Options, error) { return load(&Options{}) }
 //go:embed config.yml
 var configYml []byte
 
-// Load retrieve a config data from file
-// we can pass here any struct type if we wish retrieve partial config
-func load[C *Options](dst C) (C, error) {
+// load helps to retrieve any king of config from file
+func load[C *Options | *Repo | *HTTP | *API | *User](dst C) (C, error) {
 	if err := yaml.Unmarshal(configYml, &dst); err != nil {
 		return nil, err
 	}
