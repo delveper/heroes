@@ -7,7 +7,7 @@ import (
 	"github.com/delveper/heroes/cfg"
 	"github.com/delveper/heroes/core/ent"
 	"github.com/delveper/heroes/core/mov"
-	"github.com/delveper/heroes/core/repo"
+	"github.com/delveper/heroes/core/nurepo"
 )
 
 func main() {
@@ -19,7 +19,7 @@ func main() {
 func Run() error {
 	var (
 		opt *cfg.Options
-		kpr *repo.Keeper
+		kpr *nurepo.Keeper
 		agt *ent.Agent
 		mvr *mov.Mover
 		err error
@@ -29,13 +29,13 @@ func Run() error {
 		return fmt.Errorf("failed to load config: %w", err)
 	}
 
-	if kpr, err = repo.NewKeeper(opt); err != nil {
+	if kpr, err = nurepo.NewKeeper(opt); err != nil {
 		return fmt.Errorf("failed to set up repo: %w", err)
 	}
 
-	if err = kpr.MakeMigrations(); err != nil {
-		return fmt.Errorf("failed make changes to repo: %w", err)
-	}
+	// if err = kpr.MakeMigrations(); err != nil {
+	// 	return fmt.Errorf("failed make changes to repo: %w", err)
+	// }
 
 	agt = ent.NewAgent(kpr)
 

@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"reflect"
 	"regexp"
+	"strings"
 )
+
+const sqlKey = "sql"
 
 // GetTagValue is designed because luck of functionality in reflect.Tag.Lookup()
 // and help retrieve <value> in given <key> from struct fields
@@ -42,48 +45,49 @@ func GetStructName(src any) (string, error) {
 	return reflect.Indirect(reflect.ValueOf(src)).Type().Name(), nil
 }
 
-// StructValue will be used for code gen
-type StructValue struct {
-	Field string
-	Tag   string
-	Value interface{}
+type StructData struct {
+	Name   string
+	Fields []string
+	Tags   []string
+	Values []string
 }
 
-// GetStructFieldValues retrieve non-zero fields
+// GetStructData retrieve non-zero fields
 // from structs with corresponding values that have `sql`tags
-func GetStructFieldValues(src any) ([]StructValue, error) {
+func GetStructData(src any) (*StructData, error) {
 	if err := inspectSource(src); err != nil {
 		return nil, err
 	}
 
 	srcValue := reflect.Indirect(reflect.ValueOf(src))
 
-	res := make([]StructValue, 0, srcValue.NumField())
+	res := new(StructData)
+
+	if res.Name == "" {
+		res.Name = strings.ToLower(srcValue.Type().Name())
+	}
 
 	for i := 0; i < srcValue.NumField(); i++ {
-		var val StructValue
 
-		if fieldValue := srcValue.Field(i); !fieldValue.IsZero() { // TODO: Gotcha with bool|int
+		if fieldValue := srcValue.Field(i); !fieldValue.IsZero() { // TODO: maybe it is redundant
 
-			if fieldTag, ok := GetTagValue(srcValue.Type().Field(i).Tag, "sql"); ok {
-
-				val.Field = srcValue.Type().Field(i).Name
-				val.Value = fieldValue.Interface()
-				val.Tag = fieldTag
-
-				res = append(res, val)
+			if fieldTag, ok := GetTagValue(srcValue.Type().Field(i).Tag, sqlKey); ok {
+				res.Fields = append(res.Fields, srcValue.Type().Field(i).Name)
+				res.Tags = append(res.Tags, fieldTag)
+				res.Values = append(res.Values, fmt.Sprintf("%v", fieldValue.Interface()))
 
 				// recursive call is allowed only for nested structs
-				if fieldValue.Type().Kind() != reflect.Struct {
-					continue
+				if fieldValue.Type().Kind() == reflect.Struct {
+					add, err := GetStructData(fieldValue.Interface())
+					if err != nil {
+						return nil, err
+					}
+
+					res.Fields = append(res.Fields, add.Fields...)
+					res.Tags = append(res.Tags, add.Tags...)
+					res.Values = append(res.Values, add.Values...)
 				}
 
-				add, err := GetStructFieldValues(fieldValue.Interface())
-				if err != nil {
-					return nil, err
-				}
-
-				res = append(res, add...)
 			}
 
 		}
@@ -92,8 +96,3 @@ func GetStructFieldValues(src any) ([]StructValue, error) {
 
 	return res, nil
 }
-
-// TODO: Overkill :)
-// func HasZeroValue[T ~int | ~string](val T) bool {
-// 	return val == *new(T)
-// }
