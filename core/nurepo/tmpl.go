@@ -9,9 +9,16 @@ import (
 	"github.com/delveper/heroes/pkg/black"
 )
 
-func GenInsertQuery(src any) ([]byte, error) {
-	const insert = `INSERT INTO "{{.Name}}" ( {{ StringsJoin .Tags ", "     }} )
-	                               VALUES   ('{{ StringsJoin .Values "', '" }}');`
+const (
+	insert = `INSERT INTO "{{.Name}}" ( {{ StringsJoin .Tags ", "     }} )
+	                               VALUES   ('{{ StringsJoin .Values "', '" }}')   
+								   RETURNING *;`  // we can make id variadic param as well
+
+	get = `SELECT * FROM "{{.Name}}" WHERE id =  $1`
+)
+
+func GenQuery(src any, ptt string) ([]byte, error) {
+
 	var (
 		tmpl *template.Template
 		res  *black.StructData
@@ -32,6 +39,6 @@ func GenInsertQuery(src any) ([]byte, error) {
 	if err = tmpl.Execute(&buf, res); err != nil {
 		return nil, fmt.Errorf("error composing query template: %w", err)
 	}
-	fmt.Println(string(buf.Bytes()))
+
 	return buf.Bytes(), nil
 }

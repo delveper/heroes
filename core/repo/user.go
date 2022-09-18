@@ -27,7 +27,7 @@ func (kpr *Keeper) Add(usr User) (User, error) {
 
 	default:
 		return ent.User{}, fmt.Errorf("%v: %w", ErrInsertingValue, err)
-
 	}
+
 	return usr, nil
 }
