@@ -16,7 +16,7 @@ postgres:
   user_name: postgres
   password: postgres
   db_name: postgres
-  driver_name: postgres
+  driver_name: pgx
 
 # API
 api:

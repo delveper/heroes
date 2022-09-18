@@ -1,4 +1,4 @@
-package sply
+package mov
 
 import (
 	"errors"
@@ -62,7 +62,7 @@ func (mvr *Mover) Add(rw http.ResponseWriter, req *http.Request) {
 	case err == nil:
 		respond(rw, req, http.StatusCreated, usr)
 
-	case errors.Is(err, repo.ErrEmailExists): // how to decouple from repo and user?
+	case errors.Is(err, repo.ErrEmailExists): // TODO: Decouple from repo. Should I put it to core/user ?
 		respondErr(rw, req, http.StatusConflict, errors.Unwrap(err))
 
 	default:

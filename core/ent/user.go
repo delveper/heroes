@@ -8,7 +8,7 @@ import (
 
 // User is a key entity
 // `regex` was designed for field validation ./pkg/black
-// `sql` is designed for to code gen ./pkg/reponu
+// `sql` is designed for to code gen ./pkg/nurepo
 type User struct {
 	ID        string    `json:"id" sql:"id"` // may be uuid.UUID
 	FullName  string    `json:"full_name" sql:"full_name" regex:"(?i)^[\p{L}A-Z&\s-'’.]{2,255}$"`

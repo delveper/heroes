@@ -8,18 +8,18 @@ import (
 	"log"
 
 	"github.com/delveper/heroes/cfg"
+
+	_ "github.com/jackc/pgx/v4/stdlib" // we can switch drivers in config
 	_ "github.com/lib/pq"
 )
 
 var (
 	ErrInsertingValue      = errors.New("could not insert values into table")
 	ErrDuplicateConstraint = errors.New("duplicate key value violates unique constraint")
-	ErrEmailExists         = errors.New("email already exists")
+	ErrEmailExists         = errors.New("email already exists") // smells bad
 )
 
-type Keeper struct {
-	*sql.DB
-}
+type Keeper struct{ *sql.DB }
 
 // NewKeeper returns pointer receiver
 // to new Keeper with database options out of the box

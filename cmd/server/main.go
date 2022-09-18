@@ -6,8 +6,8 @@ import (
 
 	"github.com/delveper/heroes/cfg"
 	"github.com/delveper/heroes/core/ent"
+	"github.com/delveper/heroes/core/mov"
 	"github.com/delveper/heroes/core/repo"
-	"github.com/delveper/heroes/core/sply"
 )
 
 func main() {
@@ -21,7 +21,7 @@ func Run() error {
 		opt *cfg.Options
 		kpr *repo.Keeper
 		agt *ent.Agent
-		mvr *sply.Mover
+		mvr *mov.Mover
 		err error
 	)
 
@@ -39,7 +39,7 @@ func Run() error {
 
 	agt = ent.NewAgent(kpr)
 
-	mvr = sply.NewMover(agt, opt)
+	mvr = mov.NewMover(agt, opt)
 
 	if err = mvr.Serve(); err != nil {
 		return fmt.Errorf("failed to run logistics: %w", err)

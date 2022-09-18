@@ -1,4 +1,4 @@
-package sply
+package mov
 
 import (
 	"strings"
