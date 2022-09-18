@@ -17,6 +17,7 @@ var (
 	ErrInsertingValue      = errors.New("could not insert values into table")
 	ErrDuplicateConstraint = errors.New("duplicate key value violates unique constraint")
 	ErrEmailExists         = errors.New("email already exists") // smells bad
+	errUnique              = errors.New("unique_violation")
 )
 
 type Keeper struct{ *sql.DB }

@@ -6,8 +6,6 @@ import (
 	"regexp"
 )
 
-const sqlKey = "sql"
-
 // GetTagValue is designed because luck of functionality in reflect.Tag.Lookup()
 // and help retrieve <value> in given <key> from struct fields
 func GetTagValue(tag reflect.StructTag, key string) (string, bool) {

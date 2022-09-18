@@ -2,17 +2,18 @@ package mov
 
 import (
 	"errors"
-	"log"
 	"net/http"
 
 	"github.com/delveper/heroes/core/ent"
-	"github.com/delveper/heroes/core/repo"
 	"github.com/delveper/heroes/pkg/black"
+	"github.com/lib/pq"
 )
 
 type UserMover interface { // we can use here repo.UserKeeper instead
 	Add(ent.User) (ent.User, error)
 }
+
+var ErrUniqueEmail = errors.New("user email has to be unique")
 
 // TODO: handle errors gracefully
 
@@ -35,37 +36,31 @@ func (mvr *Mover) Add(rw http.ResponseWriter, req *http.Request) {
 	usr := ent.User{}
 	if err := decodeBody(req, &usr); err != nil {
 		respondErr(rw, req, http.StatusInternalServerError, err)
-		return
 	}
-
-	// validate usr
+	// validation
 	switch err := black.ValidateStruct(usr); {
-
-	case err == nil: // move forward
-
-	// we do need pointer receiver squared here,
-	// I am the victim of the circumstances :)
 	case errors.As(err, new(*black.ValidationError)):
-		log.Println(err)
 		respondErr(rw, req, http.StatusUnprocessableEntity, errors.Unwrap(err))
 		return
-
-	default:
+	case err != nil:
 		respondErr(rw, req, http.StatusInternalServerError, err)
 		return
+	default: // everything looks ok so far
 	}
 
-	// add usr
-	// TODO: Handle errors gracefully
+	// add usr TODO: Handle errors gracefully
 	switch usr, err := mvr.Agent.Add(usr); {
-
-	case err == nil:
-		respond(rw, req, http.StatusCreated, usr)
-
-	case errors.Is(err, repo.ErrEmailExists): // TODO: Decouple from repo. Should I put it to core/user ?
-		respondErr(rw, req, http.StatusConflict, errors.Unwrap(err))
-
-	default:
+	case err != nil:
+		switch err, ok := err.(*pq.Error); ok {
+		case err.Code.Name() == "unique_violation":
+			respondErr(rw, req, http.StatusConflict, ErrUniqueEmail)
+			return
+		default:
+			// could be other cases
+		}
 		respondErr(rw, req, http.StatusInternalServerError, err)
+		return
+	default:
+		respond(rw, req, http.StatusCreated, usr)
 	}
 }
