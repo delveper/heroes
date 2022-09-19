@@ -21,7 +21,7 @@ type Repo struct {
 	Port       string `yaml:"port"`
 	UserName   string `yaml:"user_name"`
 	Password   string `yaml:"password"`
-	DbName     string `yaml:"db_name"`
+	DBName     string `yaml:"db_name"`
 	DriverName string `yaml:"driver_name"`
 }
 

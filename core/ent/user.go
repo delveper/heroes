@@ -8,13 +8,12 @@ import (
 
 // User is a key entity
 // `regex` was designed for field validation ./pkg/black
-// `sql` is designed for to code gen ./pkg/nurepo
 type User struct {
-	ID        string    `json:"id" sql:"id"` // may be uuid.UUID
-	FullName  string    `json:"full_name" sql:"full_name" regex:"(?i)^[\p{L}A-Z&\s-'’.]{2,255}$"`
-	Email     string    `json:"email" sql:"email" regex:"(?i)^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$"`
-	Password  string    `json:"password" sql:"password" regex:"^.{8,255}$"`
-	CreatedAt time.Time `json:"created_at" sql:"created_at"`
+	ID        string    `json:"id"` // may be uuid.UUID
+	FullName  string    `json:"full_name" regex:"(?i)^[\p{L}A-Z&\s-'’.]{2,255}$"`
+	Email     string    `json:"email" regex:"(?i)^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$"`
+	Password  string    `json:"password" regex:"^.{8,255}$"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 // UserKeeper defines an interface
@@ -23,6 +22,7 @@ type UserKeeper interface {
 	Add(User) (User, error)
 }
 
+// Agent 006 will be user servant :)
 type Agent struct {
 	Keeper UserKeeper
 }

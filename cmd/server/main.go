@@ -33,9 +33,9 @@ func Run() error {
 		return fmt.Errorf("failed to set up repo: %w", err)
 	}
 
-	// if err = kpr.MakeMigrations(); err != nil {
-	// 	return fmt.Errorf("failed make changes to repo: %w", err)
-	// }
+	if err = kpr.MakeMigrations(); err != nil {
+		return fmt.Errorf("failed make changes to repo: %w", err)
+	}
 
 	agt = ent.NewAgent(kpr)
 

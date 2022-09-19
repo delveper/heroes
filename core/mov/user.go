@@ -56,7 +56,7 @@ func (mvr *Mover) Add(rw http.ResponseWriter, req *http.Request) {
 			respondErr(rw, req, http.StatusConflict, ErrUniqueEmail)
 			return
 		default:
-			// could be other cases
+			// predict other cases
 		}
 		respondErr(rw, req, http.StatusInternalServerError, err)
 		return

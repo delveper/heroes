@@ -4,9 +4,15 @@ import (
 	"fmt"
 
 	"github.com/delveper/heroes/core/ent"
-	"github.com/delveper/heroes/core/nurepo"
+	"github.com/delveper/heroes/pkg/black"
 )
 
 func main() {
-	fmt.Println(nurepo.GenInsertQuery(ent.User{ID: "dffa", FullName: "basldfjffjasdfasf"}))
+	usr := ent.User{
+		ID:       "dfdfdfa",
+		FullName: "sdfasd",
+		Email:    "sadfas@cxvx.df",
+		Password: "",
+	}
+	fmt.Println(black.ValidateStruct(usr))
 }
