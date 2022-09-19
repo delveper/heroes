@@ -33,6 +33,7 @@ func (mvr *Mover) HandleUser() http.Handler {
 
 // Add is a method creating user
 func (mvr *Mover) Add(rw http.ResponseWriter, req *http.Request) {
+	// unmarshal user
 	usr := ent.User{}
 	if err := decodeBody(req, &usr); err != nil {
 		respondErr(rw, req, http.StatusInternalServerError, err)
@@ -47,7 +48,6 @@ func (mvr *Mover) Add(rw http.ResponseWriter, req *http.Request) {
 		return
 	default: // everything looks ok so far
 	}
-
 	// add usr TODO: Handle errors gracefully
 	switch usr, err := mvr.Agent.Add(usr); {
 	case err != nil:

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/delveper/heroes/core/ent"
 	"github.com/delveper/heroes/pkg/black"
 )
 
@@ -16,7 +17,7 @@ var (
 // for wrapping functional options
 type Middleware func(http.Handler) http.Handler
 
-type contextKey struct{ string }
+type contextKey struct{ any }
 
 func Wrap(hdl http.Handler, middleware ...Middleware) http.Handler {
 	for _, mid := range middleware {
@@ -49,13 +50,8 @@ func ValidateEntity(src any) Middleware {
 				respondErr(rw, req, http.StatusInternalServerError, err)
 				return
 			default: // everything looks ok so far
-				// struct underlying name
-				name, err := black.GetStructName(src)
-				if err != nil {
-					respondErr(rw, req, http.StatusInternalServerError, err)
-				}
-				// just drilling techniques, maybe it is context violation
-				ctx := context.WithValue(context.Background(), &contextKey{name}, src)
+				// maybe it is context violation
+				ctx := context.WithValue(context.Background(), &contextKey{ent.User{}}, src)
 				hdl.ServeHTTP(rw, req.WithContext(ctx))
 			}
 		})
