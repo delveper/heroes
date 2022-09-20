@@ -10,28 +10,27 @@ import (
 
 const defaultKey = "regex"
 
-var ErrUnexpected = errors.New("unexpected error has occurred")
+var ErrUnexpected = errors.New("unexpected error occurred")
 var ErrValidating = errors.New("validation error")
 
-// ValidationError is what it is
+// ErrorValidation is what it is
 // we can catch it type in logistics level
-type ValidationError struct {
+type ErrorValidation struct {
 	entity   string
 	property string
 	isZero   bool
 	code     string
 }
 
-func (err *ValidationError) Error() string {
-	if !err.isZero {
-		err.code = "valid" + " "
-		// TODO: Extend specific
+func (errV *ErrorValidation) Error() string {
+	if !errV.isZero {
+		errV.code = "valid" + " "
 	}
 
 	return strings.ToLower(fmt.Sprintf("%s has to have %s%s",
-		err.entity,
-		err.code,
-		err.property))
+		errV.entity,
+		errV.code,
+		errV.property))
 }
 
 // ValidateStruct validates struct fields
@@ -62,12 +61,12 @@ func ValidateStruct(src any) (err error) {
 		if pattern, ok := GetTagValue(tagValue, defaultKey); ok {
 			if fieldValue.IsZero() {
 				return fmt.Errorf("%s: %w", ErrValidating,
-					&ValidationError{entity: structName, property: fieldName, isZero: true})
+					&ErrorValidation{entity: structName, property: fieldName, isZero: true})
 			}
 			// field validation according pattern
 			if !regexp.MustCompile(pattern).MatchString(fmt.Sprintf("%v", fieldValue)) {
 				return fmt.Errorf("%s: %w", ErrValidating,
-					&ValidationError{entity: structName, property: fieldName})
+					&ErrorValidation{entity: structName, property: fieldName})
 			}
 		}
 		// recursive call for nested structs

@@ -10,7 +10,8 @@ import (
 // `regex` was designed for field validation ./pkg/black
 type User struct {
 	ID        string    `json:"id"` // may be uuid.UUID
-	FullName  string    `json:"full_name" regex:"(?i)^[\p{L}A-Z&\s-'’.]{2,255}$"`
+	FirstName string    `json:"first_name" regex:"(?i)^[\p{L}A-Z&\s-'’.]{2,255}$"`
+	LastName  string    `json:"last_name" regex:"(?i)^[\p{L}A-Z&\s-'’.]{2,255}$"`
 	Email     string    `json:"email" regex:"(?i)^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$"`
 	Password  string    `json:"password" regex:"^.{8,255}$"`
 	CreatedAt time.Time `json:"created_at"`
@@ -35,7 +36,8 @@ func NewAgent(uk UserKeeper) *Agent {
 
 // Clean will make our awesome user like an angel
 func (usr *User) Clean() {
-	usr.FullName = strings.TrimSpace(usr.FullName)
+	usr.FirstName = strings.TrimSpace(usr.FirstName)
+	usr.LastName = strings.TrimSpace(usr.LastName)
 	usr.Email = strings.TrimSpace(usr.Email)
 }
 

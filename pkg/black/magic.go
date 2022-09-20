@@ -16,10 +16,12 @@ func GetTagValue(tag reflect.StructTag, key string) (string, bool) {
 		FindStringSubmatch(tagStr); match != nil {
 		return match[2], true
 	}
+
 	return "", false
 }
 
-func inspectSource(src any) (val *reflect.Value, err error) {
+func inspectSource(src any) (*reflect.Value, error) {
+	var err error
 	defer func() {
 		if recover() != nil {
 			err = ErrUnexpected
@@ -27,13 +29,13 @@ func inspectSource(src any) (val *reflect.Value, err error) {
 	}()
 
 	srcValue := reflect.Indirect(reflect.ValueOf(src))
-	val = &srcValue
 
 	if srcType := srcValue.Kind(); srcType != reflect.Struct {
-		return nil, fmt.Errorf("input value must be struct, got: %v", srcType)
+		return nil,
+			fmt.Errorf("input value must be struct, got: %v", srcType)
 	}
 
-	return val, err
+	return &srcValue, err
 }
 
 // GetStructName retrieve name of underlying struct
@@ -42,5 +44,7 @@ func GetStructName(src any) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return srcValue.Type().Name(), nil
+
+	return srcValue.Type().Name(),
+		nil
 }

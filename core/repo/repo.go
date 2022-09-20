@@ -3,7 +3,6 @@ package repo
 import (
 	"database/sql"
 	_ "embed"
-	"errors"
 	"fmt"
 	"log"
 
@@ -11,13 +10,6 @@ import (
 
 	_ "github.com/jackc/pgx/v4/stdlib" // we can switch drivers in config
 	_ "github.com/lib/pq"
-)
-
-var (
-	ErrInsertingValue      = errors.New("could not insert values into table")
-	ErrDuplicateConstraint = errors.New("duplicate key value violates unique constraint")
-	ErrEmailExists         = errors.New("email already exists") // smells bad
-	errUnique              = errors.New("unique_violation")
 )
 
 type Keeper struct{ *sql.DB }
@@ -51,5 +43,6 @@ func (kpr *Keeper) MakeMigrations() error {
 		return fmt.Errorf("error has occured making migrations: %w", err)
 	}
 	log.Printf("migrations were made: %+v", res)
+
 	return nil
 }

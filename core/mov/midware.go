@@ -1,12 +1,7 @@
 package mov
 
 import (
-	"errors"
 	"net/http"
-)
-
-var (
-	ErrMissingParameter = errors.New("parameter is missing: ")
 )
 
 // Middleware is simple white magic
