@@ -1,0 +1,89 @@
+# DISCLAIMER: TL;DR
+openapi: 3.0.0
+info:
+  title: Heroes
+  description: Made by Super Puper Heroes
+  version: 0.0.0
+servers:
+  - url: "https://{hostname}:{port}"
+    variables:
+      hostname:
+        default: localhost
+      port:
+        default: "8080"
+    description: Local development
+
+#https://swagger.io/docs/specification/basic-structure/
+
+paths:
+  /users:
+    post:
+      summary: Create a user, returns an object
+      operationId: Add
+      requestBody:
+        description: basic stuff
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+        required: true
+      responses:
+
+        201:
+          description: User is OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+        422:
+          description: User is invalid
+          content:
+           application/json:
+              schema:
+               $ref: "#/components/schemas/User"
+
+        409:
+          description: Users provided email that already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+        500:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - fullname
+        - email
+        - password
+      properties:
+        id:
+          type: string
+          format: uuid
+          minLength: 36
+          maxLength: 36
+        fullname:
+          type: string
+          minLength: 3
+          maxLength: 256
+        email:
+          type: string
+          format: email
+          uniqueItems: true
+        password:
+          type: string
+          minLength: 8
+          maxLength: 256
+        createdAt:
+          type: string
+          format: "date-time"
+
