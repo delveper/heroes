@@ -18,7 +18,7 @@ servers:
 paths:
   /users:
     post:
-      summary: Create a user, returns an object
+      summary: Creates a user, returns an object
       operationId: Add
       requestBody:
         description: basic stuff
@@ -44,7 +44,7 @@ paths:
                $ref: "#/components/schemas/User"
 
         409:
-          description: Users provided email that already exists
+          description: User provided email that already exists
           content:
             application/json:
               schema:
@@ -62,7 +62,8 @@ components:
     User:
       type: object
       required:
-        - fullname
+        - firstname
+        - lastname
         - email
         - password
       properties:
@@ -71,9 +72,13 @@ components:
           format: uuid
           minLength: 36
           maxLength: 36
-        fullname:
+        firstname:
           type: string
-          minLength: 3
+          minLength: 2
+          maxLength: 256
+        lastname:
+          type: string
+          minLength: 2
           maxLength: 256
         email:
           type: string

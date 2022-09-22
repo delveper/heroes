@@ -2,6 +2,7 @@ package ent
 
 import (
 	_ "embed"
+	"errors"
 	"strings"
 	"time"
 )
@@ -16,6 +17,10 @@ type User struct {
 	Password  string    `json:"password" regex:"^.{8,255}$"`
 	CreatedAt time.Time `json:"created_at"`
 }
+
+var (
+	ErrAddingUser = errors.New("could not add user")
+)
 
 // UserKeeper defines an interface
 // we want our logic to implement
@@ -44,4 +49,11 @@ func (usr *User) Clean() {
 // Add will create new user and add it to database
 func (agt *Agent) Add(usr User) (User, error) {
 	return agt.Keeper.Add(usr)
+	// TODO: Use ErrAddingUser and decouple repo from mov
+	// usr, err := agt.Keeper.Add(usr)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return User{}, ErrAddingUser
+	// }
+	// return usr, nil
 }
