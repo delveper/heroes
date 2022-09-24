@@ -7,28 +7,11 @@ import (
 	"github.com/delveper/heroes/core"
 )
 
-type (
-	User       = core.User
-	UserKeeper = core.UserKeeper
-	UserMover  = core.UserAgent
-)
-
 type Agent struct {
-	Repository UserKeeper
+	Repo core.Repository
+	// Log
 }
 
-func NewUserAgent(uk UserKeeper) *Agent {
-	return &Agent{Repository: uk}
+func NewUserAgent(ur core.Repository) *Agent {
+	return &Agent{Repo: ur}
 }
-
-func (agt *Agent) Add(User) error {
-	return nil
-}
-
-// type UserAgent struct {
-// 	keeper UserKeeper
-// }
-//
-// func NewUserAgent(uk UserKeeper) *UserAgent {
-// 	return &UserAgent{keeper: uk}
-// }

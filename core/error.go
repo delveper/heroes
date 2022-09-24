@@ -4,7 +4,7 @@ package core
 // TODO: Sentinel errors
 // )
 
-// Validate wil validate user signup data
+// Validate will validate User's signup data
 func (usr *User) Validate() error {
 	return nil
 }

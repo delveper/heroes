@@ -1,5 +1,6 @@
 package repo
 
-func (kpr *Keeper) Migrate() error {
+// Migrate meth will be responsible for migrations.
+func (kpr *Repo) Migrate() error {
 	return nil
 }

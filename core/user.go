@@ -5,18 +5,20 @@ package core
 
 // User is key entity in our project
 // Entities like User are the least likely to change
-// when something external changes/
+// when something external changes.
 type User struct {
 }
 
 // Using abstract interfaces without specific
-// knowledge of the implementation details
-// will make our software flexible and maintainable
+// knowledge of their implementation details
+// will make our software flexible and maintainable.
 
-type UserKeeper interface {
+// Repository interface can be implemented
+// in any kind of repositories like Postgres, MySQL etc.
+type Repository interface {
 	Add(User) error
 }
 
-type UserAgent interface {
-	Add(User) error
+type Agency interface {
+	Signup(User) error
 }

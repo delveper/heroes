@@ -12,12 +12,20 @@ octagon/
 │       └── main.go 
 ├── core/
 │   ├── error.go 
-│   └── user.go
+│   ├── user.go 
+│   └── validation.go
 ├── services/
-│   ├── keeper/
+│   ├─ agent/
+│   │   └── user.go
+│   ├── mover/
+│   │   ├── mover.go
+│   │   ├── response.go
+│   │   ├── middleware.go
+│   │   └── user.go
+│   ├── repo/
 │   │   ├── sql/
 │   │   │   └── migrations.sql
-│   │   ├── keeper.go
+│   │   ├── repo.go
 │   │   ├── migrate.go
 │   │   └── user.go
 │   ├── mover/
