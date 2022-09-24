@@ -1,8 +1,9 @@
-// Package keeper will act for CRUD to database.
+// Package keeper will act for CRUD operations with database.
+//
 // Using abstract interfaces without specific
 // knowledge of the implementation details
 // will make our software flexible and maintainable
-// this pattern will follow on
+// pattern of UserKeeper interface will follow on
 package keeper
 
 import (
@@ -17,6 +18,7 @@ type UserKeeper interface {
 	Add(User) error
 }
 
+// Implements the Repository
 type Keeper struct{ *sql.DB }
 
 func NewKeeper(db *sql.DB) *Keeper {

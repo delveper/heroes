@@ -6,11 +6,12 @@ octagon/
 ├── api/
 │   └── openapi.yml
 ├── cfg/
-│   └── config.yml
+│   └── config.go
 ├── cmd/
 │   └── srv/
 │       └── main.go 
 ├── core/
+│   ├── error.go 
 │   └── user.go
 ├── services/
 │   ├── keeper/
@@ -26,6 +27,7 @@ octagon/
 │   │   └── user.go
 │   └── promoter/
 │       └── promoter.go
+├── pkg/
 ├── README.md
 └── .env 
 ```
