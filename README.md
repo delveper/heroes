@@ -1,32 +1,31 @@
-# Heroes
+# Octagon 
 
 ## Arch
 ```
-heroes/
-│       
+octagon/
 ├── api/
 │   └── openapi.yml
-│       
 ├── cfg/
-│   ├── config.go
 │   └── config.yml
-│       
-├── app/
-│   └── main.go
-│       
+├── cmd/
+│   └── srv/
+│       └── main.go 
 ├── core/
 │   └── user.go
-│       
 ├── services/
-│   ├─── keeper/
-│   │    └── keeper.go
-│   ├─── mover/
-│   │    ├── handlers.go
-│   │    └── middleware.go
-│   └─── promoter/
-│        └── promoter.go
-│
+│   ├── keeper/
+│   │   ├── sql/
+│   │   │   └── migrations.sql
+│   │   ├── keeper.go
+│   │   ├── migrate.go
+│   │   └── user.go
+│   ├── mover/
+│   │   ├── mover.go
+│   │   ├── response.go
+│   │   ├── middleware.go
+│   │   └── user.go
+│   └── promoter/
+│       └── promoter.go
 ├── README.md
-├── Dockerfile
-├── docker-compose.yml
+└── .env 
 ```
