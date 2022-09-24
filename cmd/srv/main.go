@@ -1,4 +1,6 @@
-package app
+// Package main is key entrypoint
+// of our awesome application
+package main
 
 import (
 	"log"
@@ -11,6 +13,5 @@ func main() {
 }
 
 func Run() error {
-	// TODO: Just do it
 	return nil
 }
