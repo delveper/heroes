@@ -9,7 +9,7 @@ import (
 
 // Mover is responsible for carrying logistics
 type Mover struct {
-	Agent   UserMover
+	Agent   UserMoveUserMoverr
 	Options *cfg.Options
 	Router  *http.ServeMux
 	Server  *http.Server
