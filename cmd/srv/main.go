@@ -16,6 +16,7 @@ func main() {
 	}
 }
 
+// bla bla
 func Run() error {
 	var (
 		opt *cfg.Options
