@@ -44,7 +44,6 @@ type User struct {
 
 func NewOptions() (*Options, error) { return load(&Options{}) }
 
-//go:embed config.yml
 var configYml []byte
 
 // load helps to retrieve any king of config from file
